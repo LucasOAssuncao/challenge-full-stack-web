@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     goToCreate() {
-      this.$router.push("/dashboard/create");
+      this.$router.push("/dashboard/createstudents");
     },
     editStudent(student) {
       alert(`Editar aluno: ${student.name}`);
