@@ -1,86 +1,109 @@
 <template>
-  <v-container
-    class="login-container"
-    fill-height
-  >
-    <v-row justify="center">
+  <v-container>
+    <v-row
+      class="mb-4"
+      justify="space-between"
+      align="center"
+    >
       <v-col
-        cols="12"
-        sm="8"
+        cols="8"
+        sm="6"
         md="4"
       >
-        <v-card
-          class="pa-4"
-          elevation="8"
+        <v-text-field
+          v-model="search"
+          label="Search"
+          clearable
+          outlined
+          dense
+        />
+      </v-col>
+
+      <v-col
+        cols="4"
+        class="text-right"
+      >
+        <v-btn
+          color="primary"
+          @click="goToCreate"
         >
-          <v-card-title class="text-center mb-4">
-            <h2>Login</h2>
-          </v-card-title>
-
-          <v-form @submit.prevent="handleLogin">
-            <v-text-field
-              v-model="email"
-              label="E-mail"
-              type="email"
-              required
-              outlined
-              :rules="[rules.required, rules.email]"
-            />
-
-            <v-text-field
-              v-model="password"
-              label="Senha"
-              type="password"
-              required
-              outlined
-              :rules="[rules.required]"
-            />
-
-            <v-btn
-              type="submit"
-              color="primary"
-              block
-              class="mt-4"
-            >
-              Entrar
-            </v-btn>
-          </v-form>
-
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-            class="mt-4"
-          >
-            {{ errorMessage }}
-          </v-alert>
-        </v-card>
+          Cadastrar Aluno
+        </v-btn>
       </v-col>
     </v-row>
+
+    <v-data-table
+      :headers="headers"
+      :items="filteredStudents"
+      item-value="id"
+      class="elevation-2"
+      dense
+    >
+      <template #[`item.actions`]="{ item }">
+        <v-icon
+          small
+          class="mr-2"
+          @click="editStudent(item)"
+        >
+          mdi-pencil
+        </v-icon>
+        <v-icon
+          small
+          @click="deleteStudent(item)"
+        >
+          mdi-delete
+        </v-icon>
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 
 <script>
 export default {
-  name: "LoginPage",
+  name: "StudentList",
   data() {
     return {
-      email: "",
-      password: "",
-      errorMessage: "",
-      rules: {
-        required: (value) => !!value || "Campo obrigatório.",
-        email: (value) => /.+@.+\..+/.test(value) || "E-mail inválido.",
-      },
+      search: "",
+      students: [
+        { id: "RA001", name: "João Silva", cpf: "123.456.789-00" },
+        { id: "RA002", name: "Maria Oliveira", cpf: "987.654.321-00" },
+        { id: "RA003", name: "João Silva", cpf: "123.456.789-00" },
+        { id: "RA004", name: "Maria Oliveira", cpf: "987.654.321-00" },
+        { id: "RA005", name: "João Silva", cpf: "123.456.789-00" },
+        { id: "RA006", name: "Maria Oliveira", cpf: "987.654.321-00" },
+        { id: "RA007", name: "João Silva", cpf: "123.456.789-00" },
+        { id: "RA008", name: "Maria Oliveira", cpf: "987.654.321-00" },
+        { id: "RA009", name: "João Silva", cpf: "123.456.789-00" },
+        { id: "RA010", name: "Maria Oliveira", cpf: "987.654.321-00" },
+      ],
+      headers: [
+        { title: "Registro Acadêmico", key: "id" },
+        { title: "Nome", key: "name" },
+        { title: "CPF", key: "cpf" },
+        { title: "Ações", key: "actions", sortable: false, align: "center" },
+      ],
     };
   },
+  computed: {
+    filteredStudents() {
+      return this.students.filter((student) =>
+        student.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+  },
   methods: {
-    handleLogin() {
-      // Simulação de autenticação
-      if (this.email === "usuario@example.com" && this.password === "123456") {
-        alert("Login bem-sucedido!");
-        // Redirecionar ou executar lógica após o login
-      } else {
-        this.errorMessage = "E-mail ou senha incorretos.";
+    goToCreate() {
+      this.$router.push("/dashboard/create");
+    },
+    editStudent(student) {
+      alert(`Editar aluno: ${student.name}`);
+    },
+    deleteStudent(student) {
+      const confirmDelete = confirm(
+        `Tem certeza que deseja excluir ${student.name}?`
+      );
+      if (confirmDelete) {
+        this.students = this.students.filter((s) => s.id !== student.id);
       }
     },
   },
@@ -88,10 +111,7 @@ export default {
 </script>
 
 <style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.v-container {
+  padding-top: 20px;
 }
 </style>
