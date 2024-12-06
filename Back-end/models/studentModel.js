@@ -30,6 +30,14 @@ const Student = {
     
     db.query(query, [id], callback);
   },
+
+  delete: (id, callback) => {
+    const query = "DELETE FROM students WHERE id = ?";
+    db.query(query, [id], (err, results) => {
+      if (err) return callback(err);
+      callback(null, results);
+    });
+  },
 };
 
 module.exports = Student;

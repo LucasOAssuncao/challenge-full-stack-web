@@ -11,16 +11,17 @@ const createStudent = (req, res, next) => {
   Student.create({ name, email, ra, cpf }, (err, results) => {
     if (err) {
       if (err.code === "ER_DUP_ENTRY") {
-        return next(
-          new AppError("RA, CPF ou E-mail já cadastrados", 400)
-        );
+        return next(new AppError("RA, CPF ou E-mail já cadastrados", 400));
       }
       return next(new AppError("Erro ao cadastrar estudante", 500));
     }
 
     res
       .status(201)
-      .json({ message: "Estudante cadastrado com sucesso", studentId: results.insertId });
+      .json({
+        message: "Estudante cadastrado com sucesso",
+        studentId: results.insertId,
+      });
   });
 };
 
@@ -63,9 +64,24 @@ const getStudentById = (req, res, next) => {
   });
 };
 
+const deleteStudent = (req, res, next) => {
+  const { id } = req.params;
+
+  Student.delete(id, (err, results) => {
+    if (err) return next(new AppError("Erro ao excluir estudante", 500));
+
+    if (results.affectedRows === 0) {
+      return next(new AppError("Estudante não encontrado", 404));
+    }
+
+    res.status(200).json({ message: "Estudante excluído com sucesso" });
+  });
+};
+
 module.exports = {
   createStudent,
   updateStudent,
   listStudents,
   getStudentById,
+  deleteStudent,
 };
