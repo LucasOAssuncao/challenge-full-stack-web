@@ -9,7 +9,11 @@ const Student = {
   },
 
   update: (id, studentData, callback) => {
-    const query = "UPDATE students SET name = ?, email = ? WHERE id = ?";
+    const query = `
+      UPDATE students 
+      SET name = ?, email = ?, updated_at = NOW() 
+      WHERE id = ?
+    `;
     const { name, email } = studentData;
 
     db.query(query, [name, email, id], callback);
