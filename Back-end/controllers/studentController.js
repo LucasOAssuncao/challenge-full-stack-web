@@ -1,28 +1,45 @@
 const Student = require("../models/studentModel");
 const AppError = require("../utils/errorUtil");
 
+const generateRA = () => {
+  const ra = '1' + Math.floor(100000 + Math.random() * 900000);
+  return ra.toString();
+};
+
 const createStudent = (req, res, next) => {
-  const { name, email, ra, cpf } = req.body;
+  const { name, email, cpf } = req.body;
 
-  if (!name || !email || !ra || !cpf) {
-    return next(new AppError("Todos os campos são obrigatórios", 400));
-  }
+  let ra = generateRA();
 
-  Student.create({ name, email, ra, cpf }, (err, results) => {
-    if (err) {
-      if (err.code === "ER_DUP_ENTRY") {
-        return next(new AppError("RA, CPF ou E-mail já cadastrados", 400));
+  const checkUniqueRA = () => {
+    Student.findByRA(ra, (err, existingStudent) => {
+      if (err) return next(new AppError("Erro no servidor", 500));
+
+      if (existingStudent) {
+        ra = generateRA();
+
+        checkUniqueRA();
+      } else {
+        const studentData = { name, email, ra, cpf };
+        Student.create(studentData, (err, results) => {
+          if (err) {
+            if (err.code === "ER_DUP_ENTRY") {
+              return next(
+                new AppError("RA, CPF ou E-mail já cadastrados", 400)
+              );
+            }
+            return next(new AppError("Erro ao cadastrar estudante", 500));
+          }
+          res.status(201).json({
+            message: "Estudante cadastrado com sucesso",
+            studentId: results.insertId,
+          });
+        });
       }
-      return next(new AppError("Erro ao cadastrar estudante", 500));
-    }
+    });
+  };
 
-    res
-      .status(201)
-      .json({
-        message: "Estudante cadastrado com sucesso",
-        studentId: results.insertId,
-      });
-  });
+  checkUniqueRA();
 };
 
 const updateStudent = (req, res, next) => {

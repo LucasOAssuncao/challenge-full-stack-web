@@ -31,6 +31,14 @@ const Student = {
     db.query(query, [id], callback);
   },
 
+  findByRA: (ra, callback) => {
+    const query = "SELECT * FROM students WHERE ra = ?";
+    db.query(query, [ra], (err, results) => {
+      if (err) return callback(err);
+      callback(null, results[0]);
+    });
+  },
+
   delete: (id, callback) => {
     const query = "DELETE FROM students WHERE id = ?";
     db.query(query, [id], (err, results) => {
