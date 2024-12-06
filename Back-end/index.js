@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const errorHandler = require("./middleware/errorHandler");
 const authRoutes = require("./routes/authRoutes");
+const studentRoutes = require("./routes/studentRoutes");
 
 dotenv.config();
 
@@ -12,7 +13,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use('/auth', authRoutes);
+app.use(authRoutes.prefix, authRoutes.router);
+app.use(studentRoutes.prefix, studentRoutes.router);
 
 app.use(errorHandler);
 
