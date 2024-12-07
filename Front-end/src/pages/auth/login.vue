@@ -47,6 +47,15 @@
             >
               Entrar
             </v-btn>
+
+            <v-btn
+              color="secondary"
+              block
+              class="mt-2"
+              @click="redirectToRegister"
+            >
+              Não tem uma conta? Registre-se
+            </v-btn>
           </v-form>
 
           <v-alert
@@ -63,7 +72,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   name: "LoginPage",
@@ -73,12 +82,16 @@ export default {
       password: "",
       errorMessage: "",
       rules: {
-        required: value => !!value || "Campo obrigatório.",
-        email: value => /.+@.+\..+/.test(value) || "E-mail inválido.",
-        password: value =>
-          (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value) && /\W/.test(value)) ||
-          "A senha deve conter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais."
-      }
+        required: (value) => !!value || "Campo obrigatório.",
+        email: (value) => /.+@.+\..+/.test(value) || "E-mail inválido.",
+        password: (value) =>
+          (value.length >= 8 &&
+            /[A-Z]/.test(value) &&
+            /[a-z]/.test(value) &&
+            /\d/.test(value) &&
+            /\W/.test(value)) ||
+          "A senha deve conter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+      },
     };
   },
   methods: {
@@ -87,9 +100,9 @@ export default {
       if (!isValid) return;
 
       try {
-        const response = await axios.post('', {
+        const response = await axios.post("", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
 
         if (response.status === 200) {
@@ -102,8 +115,12 @@ export default {
 
         this.errorMessage = "E-mail ou senha incorretos.";
       }
-    }
-  }
+    },
+
+    redirectToRegister() {
+      this.$router.push("/auth/register");
+    },
+  },
 };
 </script>
 
