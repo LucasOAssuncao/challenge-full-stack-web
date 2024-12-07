@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import { routes } from 'vue-router/auto-routes'
 
 const isAuthenticated = () => {
-  return !!localStorage.getItem('user-token') || true
+  return !!localStorage.getItem('user-token')
 }
 
 const router = createRouter({
@@ -12,18 +12,16 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-  if (!isAuthenticated()) {
-    if (to.path !== '/auth/login') {
-      next('/auth/login')
-    } else {
-      next()
-    }
-  } else if (to.path === '/auth/login' && isAuthenticated()) {
-    next('/dashboard')
+  const publicRoutes = ['/auth/login', '/auth/register'];
+
+  if (!isAuthenticated() && !publicRoutes.includes(to.path)) {
+    next('/auth/login');
+  } else if (isAuthenticated() && to.path === '/auth/login') {
+    next('/dashboard');
   } else {
-    next()
+    next();
   }
-})
+});
 
 router.onError((err, to) => {
   if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
