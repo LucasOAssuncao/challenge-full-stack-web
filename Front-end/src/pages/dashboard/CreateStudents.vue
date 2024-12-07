@@ -18,38 +18,19 @@
             ref="form"
             @submit.prevent="saveStudent"
           >
-            <v-text-field
-              v-model="name"
-              label="Name"
-              required
-              outlined
-              :rules="[rules.required]"
-            />
-
-            <v-text-field
-              v-model="email"
-              label="E-mail"
-              type="email"
-              required
-              outlined
-              :rules="[rules.required, rules.email]"
-            />
-
-            <v-text-field
-              v-model="ra"
-              label="Academic Record (RA)"
-              required
-              outlined
-              :rules="[rules.required]"
-            />
-
-            <v-text-field
-              v-model="cpf"
-              label="CPF"
-              required
-              outlined
-              :rules="[rules.required, rules.cpf]"
-            />
+            <template
+              v-for="field in fields"
+              :key="field.model"
+            >
+              <v-text-field
+                v-model="student[field.model]"
+                :label="field.label"
+                :type="field.type"
+                required
+                outlined
+                :rules="field.rules"
+              />
+            </template>
 
             <v-row
               class="mt-4"
@@ -84,40 +65,68 @@
 </template>
 
 <script>
-export default {
-  name: "CreateStudents",
-  data() {
-    return {
-      name: "",
-      email: "",
-      ra: "",
-      cpf: "",
-      errorMessage: "",
-      rules: {
-        required: value => !!value || "Campo obrigatório.",
-        email: value => /.+@.+\..+/.test(value) || "E-mail inválido.",
-        cpf: value => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value) || "CPF inválido. Formato correto: 000.000.000-00"
+import { defineComponent, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+export default defineComponent({
+  name: 'CreateStudents',
+  setup() {
+    const student = reactive({
+      name: '',
+      email: '',
+      ra: '',
+      cpf: '',
+    });
+
+    const errorMessage = ref('');
+
+    const router = useRouter();
+
+    const rules = {
+      required: (value) => !!value || 'Campo obrigatório.',
+      email: (value) => /.+@.+\..+/.test(value) || 'E-mail inválido.',
+      cpf: (value) => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value) || 'CPF inválido. Formato correto: 000.000.000-00',
+    };
+
+    const fields = [
+      { model: 'name', label: 'Name', rules: [rules.required] },
+      {
+        model: 'email', label: 'E-mail', type: 'email', rules: [rules.required, rules.email],
+      },
+      { model: 'ra', label: 'Academic Record (RA)', rules: [rules.required] },
+      { model: 'cpf', label: 'CPF', rules: [rules.required, rules.cpf] },
+    ];
+
+    const form = ref(null);
+
+    const saveStudent = () => {
+      const formValid = form.value.validate();
+      if (formValid) {
+        alert(`Aluno ${student.name} cadastrado com sucesso!`);
+        student.name = '';
+        student.email = '';
+        student.ra = '';
+        student.cpf = '';
+      } else {
+        errorMessage.value = 'Por favor, preencha todos os campos corretamente.';
       }
     };
+
+    const cancel = () => {
+      router.push('/');
+    };
+
+    return {
+      student,
+      errorMessage,
+      rules,
+      fields,
+      form,
+      saveStudent,
+      cancel,
+    };
   },
-  methods: {
-    saveStudent() {
-      const formValid = this.$refs.form.validate();
-      if (formValid) {
-        alert(`Aluno ${this.name} cadastrado com sucesso!`);
-        this.name = "";
-        this.email = "";
-        this.ra = "";
-        this.cpf = "";
-      } else {
-        this.errorMessage = "Por favor, preencha todos os campos corretamente.";
-      }
-    },
-    cancel() {
-      this.$router.push("/");
-    }
-  }
-};
+});
 </script>
 
 <style scoped>
