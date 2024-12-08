@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/utils/api";
 
 export default {
   name: "LoginPage",
@@ -100,20 +100,23 @@ export default {
       if (!isValid) return;
 
       try {
-        const response = await axios.post("", {
+        const response = await api.post("auth/login", {
           email: this.email,
           password: this.password,
         });
 
         if (response.status === 200) {
-          alert("Login bem-sucedido!");
+          const token = response.data.token;
+
+          localStorage.setItem("authToken", token);
+
+          this.$router.push("/");
         } else {
           this.errorMessage = "Falha no login.";
         }
       } catch (error) {
-        console.log(error);
-
-        this.errorMessage = "E-mail ou senha incorretos.";
+        this.errorMessage =
+          error.response?.data?.message || "E-mail ou senha incorretos.";
       }
     },
 
