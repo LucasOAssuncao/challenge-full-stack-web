@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/utils/api";
 
 export default {
   name: "RegisterPage",
@@ -109,7 +109,7 @@ export default {
       if (!isValid) return;
 
       try {
-        const response = await axios.post("/auth/register", {
+        const response = await api.post("auth/register", {
           name: this.name,
           email: this.email,
           password: this.password,
@@ -123,7 +123,6 @@ export default {
         }
       } catch (error) {
         console.log(error);
-
         this.errorMessage = error.response?.data?.message || "Erro ao criar conta.";
       }
     },
