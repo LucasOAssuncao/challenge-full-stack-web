@@ -5,6 +5,10 @@
       permanent
     >
       <v-list dense>
+        <v-list-subheader>Módulo Acadêmico</v-list-subheader>
+
+        <v-divider />
+
         <v-list-item
           link
           @click="navigateTo('/dashboard')"
@@ -13,6 +17,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
     <v-main>
       <router-view />
     </v-main>
