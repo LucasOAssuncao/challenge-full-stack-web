@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import { routes } from 'vue-router/auto-routes'
 
 const isAuthenticated = () => {
-  return !!localStorage.getItem('user-token')
+  return !!localStorage.getItem('authToken')
 }
 
 const router = createRouter({
@@ -17,7 +17,7 @@ router.beforeEach((to, from, next) => {
   if (!isAuthenticated() && !publicRoutes.includes(to.path)) {
     next('/auth/login');
   } else if (isAuthenticated() && to.path === '/auth/login') {
-    next('/dashboard');
+    next('/');
   } else {
     next();
   }
