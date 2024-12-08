@@ -18,6 +18,6 @@ app.use(studentRoutes.prefix, studentRoutes.router);
 
 app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
+app.listen(3001, () => {
+  console.log("Servidor rodando na porta 3001");
 });
