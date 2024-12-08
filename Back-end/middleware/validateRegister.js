@@ -12,7 +12,7 @@ const validateRegister = [
     .withMessage("A senha deve conter pelo menos uma letra minúscula")
     .matches(/[0-9]/)
     .withMessage("A senha deve conter pelo menos um número")
-    .matches(/[@$!%*?&#]/)
+    .matches(/[@$!%*?.&#]/)
     .withMessage("A senha deve conter pelo menos um caractere especial"),
   (req, res, next) => {
     const errors = validationResult(req);
