@@ -25,10 +25,10 @@ const register = (req, res, next) => {
   });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findByEmail(email, (err, user, next) => {
+  User.findByEmail(email, (err, user) => {
     if (err) return next(new AppError("Erro no servidor", 500));
     if (!user) return next(new AppError("E-mail ou senha incorretos", 400));
 
@@ -39,6 +39,7 @@ const login = (req, res) => {
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
+
       res.status(200).json({ message: "Login bem-sucedido", token });
     });
   });
