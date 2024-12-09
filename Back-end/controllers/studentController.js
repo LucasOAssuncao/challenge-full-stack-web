@@ -1,24 +1,15 @@
 const Student = require("../models/studentModel");
 const AppError = require("../utils/errorUtil");
 
-const generateRA = () => {
-  const ra = '1' + Math.floor(100000 + Math.random() * 900000);
-  return ra.toString();
-};
-
 const createStudent = (req, res, next) => {
-  const { name, email, cpf } = req.body;
-
-  let ra = generateRA();
+  const { name, email, cpf, ra } = req.body;
 
   const checkUniqueRA = () => {
     Student.findByRA(ra, (err, existingStudent) => {
       if (err) return next(new AppError("Erro no servidor", 500));
 
       if (existingStudent) {
-        ra = generateRA();
-
-        checkUniqueRA();
+        return next(new AppError("RA já cadastrado", 400));
       } else {
         const studentData = { name, email, ra, cpf };
         Student.create(studentData, (err, results) => {
