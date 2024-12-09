@@ -6,6 +6,7 @@ const validateStudentInfo = [
   body("cpf")
     .notEmpty()
     .withMessage("O CPF é obrigatório")
+    .bail()
     .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
     .withMessage("CPF inválido. Formato correto: 000.000.000-00"),
   body("ra")
