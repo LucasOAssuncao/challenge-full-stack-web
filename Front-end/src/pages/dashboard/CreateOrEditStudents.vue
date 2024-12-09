@@ -1,5 +1,8 @@
 <template>
-  <v-container>
+  <v-container
+    fluid
+    class="form-container"
+  >
     <v-row justify="center">
       <v-col
         cols="12"
@@ -10,7 +13,7 @@
           class="pa-4"
           elevation="8"
         >
-          <v-card-title class="text-center mb-4">
+          <v-card-title class="text-center mb-4 title">
             <h2>Cadastrar Aluno</h2>
           </v-card-title>
 
@@ -25,40 +28,44 @@
             >
               <v-text-field
                 v-model="student[field.model]"
+                variant="outlined"
+                class="mb-4"
+                clearable
                 :label="field.label"
                 :type="field.type"
                 required
-                outlined
                 :rules="field.rules"
                 :disabled="field.disabled"
+                @input="field.model === 'cpf' ? formatCPF() : null"
               />
             </template>
 
-            <v-row
-              class="mt-4"
-              justify="space-between"
+            <v-sheet
+              class="mt-4 d-flex justify-end gap-4"
             >
               <v-btn
-                color="#333"
+                variant="text"
+                size="large"
                 @click="cancel"
               >
                 Cancelar
               </v-btn>
               <v-btn
                 color="primary"
+                size="large"
                 type="submit"
                 :loading="isLoading"
                 :disabled="isLoading || !isFormValid"
               >
                 Salvar
               </v-btn>
-            </v-row>
+            </v-sheet>
           </v-form>
 
           <v-alert
             v-if="errorMessage"
             type="error"
-            class="mt-4"
+            class="mt-4 error-alert"
           >
             {{ errorMessage }}
           </v-alert>
@@ -117,7 +124,10 @@ export default {
         {
           model: "ra",
           label: "Registro Acadêmico (RA)",
-          rules: [(value) => !!value || "Campo obrigatório."],
+          rules: [
+            (value) => !!value || "Campo obrigatório.",
+            (value) => value.length === 6 || "RA deve ter exatamente 6 caracteres.",
+          ],
           disabled: true,
         },
         {
@@ -127,7 +137,7 @@ export default {
             (value) => !!value || "Campo obrigatório.",
             (value) =>
               /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value) ||
-              "CPF inválido. Formato correto: 000.000.000-00",
+              "CPF inválido.",
           ],
           disabled: true,
         },
@@ -182,6 +192,16 @@ export default {
       }
     },
 
+    formatCPF() {
+      let value = this.student.cpf.replace(/\D/g, "");
+      if (value.length > 3) value = value.replace(/(\d{3})(\d)/, "$1.$2");
+      if (value.length > 6) value = value.replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3");
+      if (value.length > 9) value = value.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
+      if (value.length > 14) value = value.substring(0, 14);
+      this.student.cpf = value;
+    },
+
+
     async saveStudent() {
       const formValid = this.$refs.form.validate();
       if (formValid) {
@@ -217,7 +237,25 @@ export default {
 </script>
 
 <style scoped>
-.v-container {
-  padding-top: 40px;
+
+.form-container {
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  padding-top: 50px;
+}
+
+
+.title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+
+.error-alert {
+  background-color: #ffe8e8;
+  color: #d32f2f;
+  border: 1px solid #f44336;
+  border-radius: 4px;
 }
 </style>
