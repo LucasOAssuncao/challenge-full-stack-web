@@ -14,6 +14,7 @@ const validateRegister = [
     .withMessage("A senha deve conter pelo menos um número")
     .matches(/[@$!%*?.&#]/)
     .withMessage("A senha deve conter pelo menos um caractere especial"),
+    
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
