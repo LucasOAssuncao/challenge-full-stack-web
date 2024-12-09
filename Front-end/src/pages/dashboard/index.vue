@@ -1,9 +1,8 @@
 <template>
   <v-container>
     <v-row
-      class="mb-4"
+      class="mb-4 d-flex space-between"
       justify="space-between"
-      align="center"
     >
       <v-col
         cols="8"
@@ -12,10 +11,9 @@
       >
         <v-text-field
           v-model="search"
-          label="Search"
-          clearable
+          label="Buscar por nome"
+          density="compact"
           outlined
-          dense
         />
       </v-col>
 
@@ -24,6 +22,7 @@
         class="text-right"
       >
         <v-btn
+          size="large"
           block
           color="primary"
           @click="goToCreate"
@@ -33,29 +32,31 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-data-table
-        :headers="headers"
-        :items="filteredStudents"
-        item-value="id"
-        class="elevation-2"
-        dense
-      >
-        <template #[`item.actions`]="{ item }">
-          <v-icon
-            small
-            class="mr-2"
-            @click="editStudent(item)"
-          >
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            small
-            @click="deleteStudent(item)"
-          >
-            mdi-delete
-          </v-icon>
-        </template>
-      </v-data-table>
+      <v-col>
+        <v-data-table
+          :headers="headers"
+          :items="filteredStudents"
+          item-value="id"
+          class="elevation-2"
+          dense
+        >
+          <template #[`item.actions`]="{ item }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editStudent(item)"
+            >
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              small
+              @click="deleteStudent(item)"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+        </v-data-table>
+      </v-col>
     </v-row>
   </v-container>
 </template>
