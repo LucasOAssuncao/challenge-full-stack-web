@@ -36,9 +36,7 @@ const login = (req, res, next) => {
       if (err) return next(new AppError("Erro ao comparar senha", 500));
       if (!match) return next(new AppError("E-mail ou senha incorretos", 400));
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
       res.status(200).json({ message: "Login bem-sucedido", token });
     });
