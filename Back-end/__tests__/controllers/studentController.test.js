@@ -3,7 +3,7 @@ const studentController = require("../../controllers/studentController");
 const httpMocks = require("node-mocks-http");
 const AppError = require("../../utils/errorUtil");
 
-jest.mock("../models/studentModel");
+jest.mock("../../models/studentModel");
 
 jest.mock('mysql2', () => {
   const mockConnection = {

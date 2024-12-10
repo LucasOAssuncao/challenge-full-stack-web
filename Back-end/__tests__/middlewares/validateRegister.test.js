@@ -87,9 +87,8 @@ describe("Validate Register Middleware", () => {
       },
     });
     const res = httpMocks.createResponse();
-    const next = jest.fn();
   
-    await validateRegister(req, res, next);
+    await runMiddleware(req, res, validateRegister);
   
     expect(res.statusCode).toBe(400);
     expect(res._getJSONData()).toEqual({

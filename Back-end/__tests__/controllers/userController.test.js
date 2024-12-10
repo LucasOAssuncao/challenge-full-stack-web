@@ -18,7 +18,7 @@ jest.mock("bcryptjs", () => ({
 
 jest.mock("jsonwebtoken");
 
-jest.mock("../models/userModel", () => ({
+jest.mock("../../models/userModel", () => ({
   findByEmail: jest.fn(),
   create: jest.fn(),
 }));

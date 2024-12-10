@@ -18,6 +18,14 @@ describe("Validate Student Info Middleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
+  const runMiddleware = async (req, res, middlewares) => {
+    const next = jest.fn();
+    for (const middleware of middlewares) {
+      await middleware(req, res, next);
+      if (res.statusCode !== 200) break;
+    }
+  };
+  
   it("deve retornar erro se o CPF não for fornecido", async () => {
     const req = httpMocks.createRequest({
       body: {
@@ -28,9 +36,9 @@ describe("Validate Student Info Middleware", () => {
       },
     });
     const res = httpMocks.createResponse();
-    const next = jest.fn();
-
-    await validateStudentInfo[2](req, res, next);
+  
+    await runMiddleware(req, res, validateStudentInfo);
+  
     expect(res.statusCode).toBe(400);
     expect(res._getJSONData()).toEqual({
       errors: expect.arrayContaining([
